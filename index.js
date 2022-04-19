@@ -25,6 +25,14 @@ app.get("/", (req, res) => {
 client.connect((err) => {
   const collection = client.db("usersdb").collection("users");
   // perform actions on the collection object
+
+  //   show all user data
+  app.get("/users", (req, res) => {
+    collection.find({}).toArray((err, data) => {
+      res.send(data);
+    });
+  });
+  //   create user data
   app.post("/addUser", (req, res) => {
     collection.insertOne(req.body, (err, result) => {
       res.redirect("/");
