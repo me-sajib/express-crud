@@ -2,7 +2,7 @@ const express = require("express");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 // monogoDB connection method
 const uri =
-  "mongodb+srv://products:vDMB6oaIVDgU3m6s@cluster0.p0jku.mongodb.net/productsdb?retryWrites=true&w=majority";
+  "mongodb+srv://organicUser:nIuMzNKTnto5mxvF@cluster0.cihuk.mongodb.net/usersdb?retryWrites=true&w=majority";
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -16,7 +16,7 @@ app.get("/", (req, res) => {
 
 // mongodb connect
 client.connect((err) => {
-  const collection = client.db("productsdb").collection("products");
+  const collection = client.db("usersdb").collection("users");
   // perform actions on the collection object
   console.log("Connected to MongoDB");
   client.close();
