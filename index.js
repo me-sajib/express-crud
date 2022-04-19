@@ -1,4 +1,5 @@
 const express = require("express");
+const bodyParser = require("body-parser");
 const { MongoClient, ServerApiVersion } = require("mongodb");
 // monogoDB connection method
 const uri =
@@ -10,16 +11,25 @@ const client = new MongoClient(uri, {
 });
 
 const app = express();
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }));
+
+// parse application/json
+app.use(bodyParser.json());
 app.get("/", (req, res) => {
-  res.send("Hello World!");
+  res.sendFile(__dirname + "/index.html");
 });
 
 // mongodb connect
 client.connect((err) => {
   const collection = client.db("usersdb").collection("users");
   // perform actions on the collection object
-  console.log("Connected to MongoDB");
-  client.close();
+  app.post("/addUser", (req, res) => {
+    collection.insertOne(req.body, (err, result) => {
+      res.redirect("/");
+    });
+  });
 });
 
 // run the server
