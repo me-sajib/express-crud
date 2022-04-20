@@ -43,6 +43,21 @@
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+      <div class="my-4">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Name</th>
+              <th scope="col">Job</th>
+              <th scope="col">Email</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody id="users"></tbody>
+        </table>
+      </div>
     </div>
 
     <!-- bootstrap js cdn link -->
@@ -51,5 +66,45 @@
       integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
       crossorigin="anonymous"
     ></script>
+
+    <!-- api data fetch read, update and delete code below -->
+    <script>
+      function loadData() {
+        fetch("/users")
+          .then((res) => res.json())
+          .then((data) => {
+            const usersBody = document.getElementById("users");
+            let id = 0;
+            data.forEach((user) => {
+              const tr = document.createElement("tr");
+              tr.innerHTML = `
+                <td scope="row">${++id}</td>
+                <td>${user.name}</td>
+                <td>${user.job}</td>
+                <td>${user.email}</td>
+                <td>
+                  <button class="btn btn-primary" onclick="editUser(${
+                    user._id
+                  })">Edit</button>
+                  <button class="btn btn-danger" onclick="deleteUser('${
+                    user._id
+                  }')">Delete</button>
+                `;
+              usersBody.appendChild(tr);
+            });
+          });
+      }
+      loadData();
+
+      function deleteUser(id) {
+        fetch(`/userRemove/${id}`, {
+          method: "DELETE",
+        })
+          .then((res) => res.json())
+          .then((result) => {
+            console.log("deleted data");
+          });
+      }
+    </script>
   </body>
 </html>

@@ -1,6 +1,7 @@
 const express = require("express");
+const cors = require("cors");
 const bodyParser = require("body-parser");
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 // monogoDB connection method
 const uri =
   "mongodb+srv://organicUser:nIuMzNKTnto5mxvF@cluster0.cihuk.mongodb.net/usersdb?retryWrites=true&w=majority";
@@ -11,12 +12,15 @@ const client = new MongoClient(uri, {
 });
 
 const app = express();
+// use middleware
+app.use(cors());
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
@@ -32,12 +36,25 @@ client.connect((err) => {
       res.send(data);
     });
   });
+  // deleted user data
+  app.delete("/userRemove/:id", (req, res) => {
+    const userId = ObjectId(req.params.id);
+    // const query = { _id: userId };
+
+    collection.deleteOne({ _id: userId }, (err, result) => {
+      res.redirect("/");
+    });
+  });
+
   //   create user data
   app.post("/addUser", (req, res) => {
+    console.log(req.body);
     collection.insertOne(req.body, (err, result) => {
       res.redirect("/");
     });
   });
+
+  // end of collection
 });
 
 // run the server
