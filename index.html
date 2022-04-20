@@ -15,7 +15,12 @@
   </head>
   <body>
     <div class="container mt-4">
-      <form action="/addUser" method="post" class="w-50 mx-auto">
+      <form
+        action="/addUser"
+        method="post"
+        class="w-50 mx-auto"
+        id="create-form"
+      >
         <div class="mb-3">
           <label for="name" class="form-label">Name</label>
           <input
@@ -43,6 +48,8 @@
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </form>
+
+      <div id="loadData"></div>
 
       <div class="my-4">
         <table class="table table-bordered">
@@ -83,9 +90,9 @@
                 <td>${user.job}</td>
                 <td>${user.email}</td>
                 <td>
-                  <button class="btn btn-primary" onclick="editUser(${
+                  <button class="btn btn-primary" onclick="loadUser('${
                     user._id
-                  })">Edit</button>
+                  }')">Edit</button>
                   <button class="btn btn-danger" onclick="deleteUser('${
                     user._id
                   }')">Delete</button>
@@ -95,6 +102,51 @@
           });
       }
       loadData();
+
+      function loadUser(id) {
+        document.getElementById("create-form").style.display = "none";
+
+        fetch("/user/" + id)
+          .then((res) => res.json())
+          .then((data) => {
+            const loadData = document.getElementById("loadData");
+            loadData.innerHTML = `
+            <form action="/updateUser" method="patch" onclick="update">
+              <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="text"
+            name="name"
+            value="${data.name}"
+            class="form-control"
+            id="name"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="job" class="form-label">Job</label>
+          <input
+            type="text"
+            name="job"
+            value="${data.job}"
+            class="form-control"
+            id="job"
+            aria-describedby="emailHelp"
+          />
+        </div>
+        <div class="mb-3">
+          <button type="submit" class="btn btn-primary">Update</button>
+          </div>
+              </form>
+            `;
+          });
+      }
+
+      function update(e) {
+        e.preventDefault();
+        const name = document.getElementById("name").value;
+        const job = document.getElementById("job").value;
+        console.log(name, job);
+      }
 
       function deleteUser(id) {
         fetch(`/userRemove/${id}`, {

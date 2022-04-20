@@ -36,19 +36,25 @@ client.connect((err) => {
       res.send(data);
     });
   });
+
   // deleted user data
   app.delete("/userRemove/:id", (req, res) => {
     const userId = ObjectId(req.params.id);
-    // const query = { _id: userId };
 
     collection.deleteOne({ _id: userId }, (err, result) => {
       res.redirect("/");
     });
   });
 
+  // find user
+  app.get("/user/:id", (req, res) => {
+    const id = req.params.id;
+    collection.findOne({ _id: ObjectId(id) }, (err, result) => {
+      res.send(result);
+    });
+  });
   //   create user data
   app.post("/addUser", (req, res) => {
-    console.log(req.body);
     collection.insertOne(req.body, (err, result) => {
       res.redirect("/");
     });
@@ -58,6 +64,6 @@ client.connect((err) => {
 });
 
 // run the server
-app.listen(3000, () => {
+app.listen(5000, () => {
   console.log("Server is running on port 3000");
 });
