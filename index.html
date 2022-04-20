@@ -93,7 +93,7 @@
                   <button class="btn btn-primary" onclick="loadUser('${
                     user._id
                   }')">Edit</button>
-                  <button class="btn btn-danger" onclick="deleteUser('${
+                  <button class="btn btn-danger" onclick="deleteUser(event,'${
                     user._id
                   }')">Delete</button>
                 `;
@@ -162,13 +162,15 @@
           });
       }
 
-      function deleteUser(id) {
+      function deleteUser(event, id) {
         fetch(`/userRemove/${id}`, {
           method: "DELETE",
         })
           .then((res) => res.json())
           .then((result) => {
-            console.log("deleted data");
+            if (result) {
+              window.location.reload();
+            }
           });
       }
     </script>
