@@ -37,6 +37,19 @@ client.connect((err) => {
     });
   });
 
+  // update data
+  app.patch("/update/:id", (req, res) => {
+    const id = req.params.id;
+    const update = req.body;
+    collection.updateOne(
+      { _id: ObjectId(id) },
+      { $set: update },
+      (err, data) => {
+        res.send(data);
+      }
+    );
+  });
+
   // deleted user data
   app.delete("/userRemove/:id", (req, res) => {
     const userId = ObjectId(req.params.id);

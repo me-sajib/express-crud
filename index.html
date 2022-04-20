@@ -111,7 +111,7 @@
           .then((data) => {
             const loadData = document.getElementById("loadData");
             loadData.innerHTML = `
-            <form action="/updateUser" method="patch" onclick="update">
+          
               <div class="mb-3">
           <label for="name" class="form-label">Name</label>
           <input
@@ -119,33 +119,47 @@
             name="name"
             value="${data.name}"
             class="form-control"
-            id="name"
+            id="names"
           />
         </div>
         <div class="mb-3">
           <label for="job" class="form-label">Job</label>
           <input
             type="text"
-            name="job"
+            name="jobs"
             value="${data.job}"
             class="form-control"
-            id="job"
+            id="jobs"
             aria-describedby="emailHelp"
           />
         </div>
         <div class="mb-3">
-          <button type="submit" class="btn btn-primary">Update</button>
+          <button onclick="update('${data._id}')" class="btn btn-primary">Update</button>
           </div>
-              </form>
+             
             `;
           });
       }
 
-      function update(e) {
-        e.preventDefault();
-        const name = document.getElementById("name").value;
-        const job = document.getElementById("job").value;
-        console.log(name, job);
+      function update(id) {
+        const name = document.getElementById("names").value;
+        const job = document.getElementById("jobs").value;
+        const data = {
+          id: id,
+          name: name,
+          job: job,
+        };
+        fetch("update/" + id, {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            window.location.reload();
+          });
       }
 
       function deleteUser(id) {
